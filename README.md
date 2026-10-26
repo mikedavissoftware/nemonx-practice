@@ -1,4 +1,4 @@
-# 10-Hour Interview Prep Project: CampusOps API
+CampusOps API
 
 __Goal:__ Build a small, production-minded, multi-tenant task-management application. Demonstrate practical skills in REST API development, database design, multi-tenant architecture, authentication, authorization, testing, and production readiness.
 
