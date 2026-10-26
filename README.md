@@ -40,27 +40,81 @@ Each college is an isolated tenant with its own users and tasks, unable to acces
 
 The API should also support pagination and filtering by task status.
 
-1. Architecture
-Next.js Frontend
-       |
-       | HTTP / JSON
-       v
-NestJS REST API
-       |
-       | Controllers
-       v
-Authentication & Authorization
-       |
-       v
-Business Logic / Services
-       |
-       v
-Prisma ORM
-       |
-       v
-PostgreSQL
+<hr/>
+<hr/>
 
-Architectural Rules
+## Architecture
+
+### Simplified:
+```mermaid
+graph TD
+    subgraph FRONT END - Next.js + React + TS
+        A[CLIENT-SIDE APPLICATION]
+    end
+
+    subgraph BACK END - NestJS + Node.js + TS
+        A --> |HTTP Request| B[CONTROLLER \n -Receives request \n -Extracts request data]
+        B --> |Service Call| C[SERVICE \n -Executes business logic]
+    end
+
+    subgraph OBJECT-RELATIONAL MAPPER
+        C --> |TS Query| D[PRISM \n -Type-safe API \n -Converts query to SQL \n -Sends SQL query to DB]
+    end
+
+    subgraph DATABASE
+        D --> |SQL Query| E[POSTGRES \n -Stores/retrieves data \n -Tables and relations]
+    end
+
+    E --> |Query Results| D
+    D --> |TS Data| B
+    B --> |Client Update| A
+```
+
+### More Complicated (With OAuth):
+```mermaid
+graph TD
+    subgraph FRONTEND["FRONT END - Next.js + React + TS"]
+        A[Client-Side Application]
+    end
+
+    subgraph AUTH_PROVIDER["EXTERNAL IDENTITY PROVIDER"]
+        O[OAuth / OIDC Provider<br/>Google, GitHub, etc.]
+    end
+
+    subgraph BACKEND["BACK END - NestJS + Node.js + TS"]
+        AUTH[Auth Module<br/>Login, Callback, Token Exchange]
+        G[Auth Guard / Middleware<br/>Validates Session or Token]
+        B[Controller<br/>Receives Request<br/>Extracts Request Data]
+        C[Service<br/>Executes Business Logic]
+    end
+
+    subgraph ORM["OBJECT-RELATIONAL MAPPER"]
+        D[Prisma<br/>Type-Safe API<br/>Converts Queries to SQL]
+    end
+
+    subgraph DATABASE["DATABASE"]
+        E[(PostgreSQL<br/>Users, Roles, App Data)]
+    end
+
+    A -->|Sign-in Request| O
+    O -->|Authorization Response| AUTH
+    AUTH -->|Create Session / Set Cookie| A
+
+    A -->|HTTP Request + Session Cookie| G
+    G -->|Authenticated Request| B
+    B -->|Service Call| C
+    C -->|Prisma Query| D
+    D -->|SQL Query| E
+
+    E -->|Query Results| D
+    D -->|Typed Data| C
+    C -->|Service Result| B
+    B -->|HTTP Response| A
+
+    AUTH -.->|Find or Create User| D
+```
+
+### Architectural Rules
 NestJS owns the backend API and database access.
 Next.js calls NestJS over HTTP.
 Prisma manages database queries and migrations.
@@ -68,7 +122,7 @@ Authentication identifies the current user.
 Authorization determines what the user can access.
 Tenant scoping is enforced in backend service logic.
 API errors use consistent HTTP status codes and response formats.
-3. Suggested Project Structure
+1. Suggested Project Structure
 campusops/
 ├── apps/
 │   ├── web/                     # Next.js frontend
@@ -156,17 +210,20 @@ Add appropriate indexes.
 Use Prisma's query API effectively.
 Learn when transactions are necessary.
 Consider how tenant ownership can be enforced at the database level.
-5. Ten-Hour Implementation Plan
-Hour 1: Project Setup and Data Modeling
+
+<hr/>
+<hr/>
+
+## Implementation Plan
+### Hour 1: Project Setup and Data Modeling
 
 Tasks:
-
-Initialize the Next.js application.
-Initialize the NestJS application.
-Configure TypeScript and environment variables.
-Start PostgreSQL locally.
-Install and configure Prisma.
-Design the initial database schema.
+- Initialize the Next.js application.
+- Initialize the NestJS application.
+- Configure TypeScript and environment variables.
+- Start PostgreSQL locally.
+- Install and configure Prisma.
+- Design the initial database schema.
 
 Deliverable: Both applications start, and the database schema is ready.
 
