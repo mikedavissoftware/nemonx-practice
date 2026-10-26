@@ -8,7 +8,6 @@ import { Module } from '@nestjs/common';
 import { createObserveModule } from '@nestjs/observe';
 import { AppController } from './app.controller.js';
 import { AppService } from './app.service.js';
-import { UsersController } from './users/users.controller.js';
 export const { ObserveModule, ObserveInstrument } = createObserveModule();
 let AppModule = class AppModule {
 };
@@ -21,7 +20,7 @@ AppModule = __decorate([
                 serviceId: 'back-end',
             }),
         ],
-        controllers: [AppController, UsersController],
+        controllers: [AppController],
         providers: [AppService],
     })
 ], AppModule);

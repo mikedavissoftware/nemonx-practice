@@ -19,7 +19,7 @@ async function bootstrap() {
             client: redisClient,
             prefix: 'sess:',
         }),
-        secret: process.env.SESSION_SECRET || 'fallback-temporary-secret',
+        secret: process.env.SESSION_SECRET,
         resave: false,
         saveUninitialized: false,
         cookie: {

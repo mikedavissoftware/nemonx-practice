@@ -7,10 +7,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 import { Injectable } from '@nestjs/common';
 let AppService = class AppService {
     getHello() {
-        return 'Hello!';
-    }
-    getOther() {
-        return "what up cuz?";
+        return 'Hello World!';
     }
 };
 AppService = __decorate([
