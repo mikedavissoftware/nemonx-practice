@@ -28,7 +28,7 @@ async function bootstrap() {
         client: redisClient, 
         prefix: 'sess:', // Structural grouping pattern for keys inside Redis
       }),
-      secret: process.env.SESSION_SECRET!, // Must be a cryptographically sound key string
+      secret: process.env.SESSION_SECRET || 'fallback-temporary-secret', // Must be a cryptographically sound key string
       resave: false, // Prevents unnecessary persistent operations when sessions remain untouched
       saveUninitialized: false, // Eliminates empty anonymous memory footprints
       cookie: {
